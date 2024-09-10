@@ -24,11 +24,16 @@ const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const parentMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 const parentCube = new THREE.Mesh(geometry, parentMaterial);
 parentCube.position.set(-2, 0, 0);
+// parentCube.scale.set(2, 2, 2);
+parentCube.rotation.set(45, 0, 0);
 //网格
 const cube = new THREE.Mesh(geometry, material);
-// set是三维物体（Object3D）的属性 是相对位置 如果没有父元素 xy 就是他的
+// set是三维物体（Object3D）的属性 是相对位置 如果没有父元素 xy 就是他的 如果有父,在父的基础上计算
 cube.position.set(2, 0, 0);
-
+//xyz放大两倍 如果父元素也放大两倍,要先有父的两倍再加上自己两倍 一共放大四倍
+// cube.scale.set(2, 2, 2);
+//在x轴旋转45度  如果父也旋转45 在父的基础上 也就旋转90
+cube.rotation.set(45, 0, 0);
 scene.add(parentCube);
 parentCube.add(cube);
 
@@ -42,7 +47,7 @@ scene.add(axeHelper);
 //轨道控制器 可以使得相机围绕目标进行轨道运动
 // renderer.domElement
 const controls = new OrbitControls(camera, document.body);
-// controls.update();
+//自动旋转
 controls.autoRotate = true;
 //设置阻尼的惯性
 controls.enableDamping = true;
