@@ -1,5 +1,6 @@
 <script setup>
 import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 //创建场景
 const scene = new THREE.Scene();
 //创建相机
@@ -9,6 +10,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
+
 // 创建渲染器
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -22,12 +24,26 @@ const cube = new THREE.Mesh(geometry, material);
 
 scene.add(cube);
 camera.position.z = 5;
+camera.position.y = 2;
+camera.position.x = 2;
+// 坐标辅助器 绿色y 红色x 蓝色z
+const axeHelper = new THREE.AxesHelper(5);
+scene.add(axeHelper);
+//轨道控制器 可以使得相机围绕目标进行轨道运动
+// renderer.domElement
+const controls = new OrbitControls(camera, document.body);
+// controls.update();
+controls.autoRotate = true;
+//设置阻尼的惯性
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
 //渲染场景
 function animate() {
   console.log(11);
   requestAnimationFrame(animate);
-  cube.rotation.x += 0.01;
-  cube.rotation.y += 0.01;
+  // cube.rotation.x += 0.01;
+  // cube.rotation.y += 0.01;
+  controls.update();
   renderer.render(scene, camera);
 }
 animate();
