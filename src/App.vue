@@ -19,13 +19,23 @@ document.body.appendChild(renderer.domElement);
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 //材质
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+//父元素
+
+const parentMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+const parentCube = new THREE.Mesh(geometry, parentMaterial);
+parentCube.position.set(-2, 0, 0);
 //网格
 const cube = new THREE.Mesh(geometry, material);
+// set是三维物体（Object3D）的属性 是相对位置 如果没有父元素 xy 就是他的
+cube.position.set(2, 0, 0);
 
-scene.add(cube);
+scene.add(parentCube);
+parentCube.add(cube);
+
 camera.position.z = 5;
 camera.position.y = 2;
 camera.position.x = 2;
+
 // 坐标辅助器 绿色y 红色x 蓝色z
 const axeHelper = new THREE.AxesHelper(5);
 scene.add(axeHelper);
@@ -39,7 +49,6 @@ controls.enableDamping = true;
 controls.dampingFactor = 0.08;
 //渲染场景
 function animate() {
-  console.log(11);
   requestAnimationFrame(animate);
   // cube.rotation.x += 0.01;
   // cube.rotation.y += 0.01;
