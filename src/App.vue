@@ -45,8 +45,8 @@ camera.position.x = 2;
 const axeHelper = new THREE.AxesHelper(5);
 scene.add(axeHelper);
 //轨道控制器 可以使得相机围绕目标进行轨道运动
-// renderer.domElement
-const controls = new OrbitControls(camera, document.body);
+// document.body
+const controls = new OrbitControls(camera, renderer.domElement);
 //自动旋转
 controls.autoRotate = true;
 //设置阻尼的惯性
@@ -61,6 +61,36 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();
+//监听画面变化，更新渲染画面
+window.addEventListener("resize", () => {
+  //重置渲染器宽高比
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  //重置相机宽高比
+  camera.aspect = window.innerWidth / innerHeight;
+  //更新相机投影矩阵
+  camera.updateProjectionMatrix();
+});
+var button = document.createElement("button");
+button.innerHTML = "点击全屏";
+button.style.position = "relative";
+button.style.left = "10px";
+button.style.top = "10px";
+document.body.appendChild(button);
+button.onclick = function () {
+  //全屏
+  document.body.requestFullscreen();
+};
+
+var exitbutton = document.createElement("button");
+exitbutton.innerHTML = "退出全屏";
+exitbutton.style.position = "relative";
+exitbutton.style.left = "20px";
+exitbutton.style.top = "10px";
+document.body.appendChild(exitbutton);
+exitbutton.onclick = function () {
+  //退出全屏
+  document.exitFullscreen();
+};
 </script>
 
 <template>
