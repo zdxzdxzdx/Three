@@ -1,6 +1,10 @@
 <script setup>
 import * as THREE from "three";
+//导入轨道控制器
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+// 导入lil.gui
+import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+
 //创建场景
 const scene = new THREE.Scene();
 //创建相机
@@ -22,6 +26,8 @@ const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 //父元素
 
 const parentMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+//设置父元素材质为线框模式
+parentMaterial.wireframe = true;
 const parentCube = new THREE.Mesh(geometry, parentMaterial);
 parentCube.position.set(-2, 0, 0);
 // parentCube.scale.set(2, 2, 2);
@@ -48,7 +54,7 @@ scene.add(axeHelper);
 // document.body
 const controls = new OrbitControls(camera, renderer.domElement);
 //自动旋转
-controls.autoRotate = true;
+// controls.autoRotate = true;
 //设置阻尼的惯性
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
@@ -70,27 +76,74 @@ window.addEventListener("resize", () => {
   //更新相机投影矩阵
   camera.updateProjectionMatrix();
 });
-var button = document.createElement("button");
-button.innerHTML = "点击全屏";
-button.style.position = "relative";
-button.style.left = "10px";
-button.style.top = "10px";
-document.body.appendChild(button);
-button.onclick = function () {
-  //全屏
-  document.body.requestFullscreen();
-};
+// var button = document.createElement("button");
+// button.innerHTML = "点击全屏";
+// button.style.position = "relative";
+// button.style.left = "10px";
+// button.style.top = "10px";
+// document.body.appendChild(button);
+// button.onclick = function () {
+//   //全屏
+//   document.body.requestFullscreen();
+// };
 
-var exitbutton = document.createElement("button");
-exitbutton.innerHTML = "退出全屏";
-exitbutton.style.position = "relative";
-exitbutton.style.left = "20px";
-exitbutton.style.top = "10px";
-document.body.appendChild(exitbutton);
-exitbutton.onclick = function () {
-  //退出全屏
-  document.exitFullscreen();
+// var exitbutton = document.createElement("button");
+// exitbutton.innerHTML = "退出全屏";
+// exitbutton.style.position = "relative";
+// exitbutton.style.left = "20px";
+// exitbutton.style.top = "10px";
+// document.body.appendChild(exitbutton);
+// exitbutton.onclick = function () {
+//   //退出全屏
+//   document.exitFullscreen();
+// };
+// 使用lil 实例化gui 相当于代替上面的创建按钮
+let gui = new GUI();
+let eventObj = {
+  Fullscreen: function () {
+    document.body.requestFullscreen();
+  },
+  exitFullscreen: function () {
+    document.exitFullscreen();
+  },
 };
+gui.add(eventObj, "Fullscreen").name("全屏");
+gui.add(eventObj, "exitFullscreen").name("退出全屏");
+// gui.add(cube.position, "x", -5, 5).name("立方体x轴位置");
+// gui.add(cube.position, "x").min(-10).max(10).step(1).name("立方体x轴位置");
+//放到一个文件下
+let folder = gui.addFolder("立方体位置");
+folder
+  .add(cube.position, "x")
+  .min(-10)
+  .max(10)
+  .step(1)
+  .name("立方体x轴位置")
+  .onChange((val) => {
+    console.log("立方体x轴位置", val);
+  });
+
+folder
+  .add(cube.position, "y")
+  .min(-10)
+  .max(10)
+  .step(1)
+  .name("立方体y轴位置")
+  .onFinishChange((val) => {
+    console.log("立方体y轴最终位置", val);
+  });
+
+//设置父元素是否线框
+gui.add(parentMaterial, "wireframe").name("父元素线框模式");
+let colorParams = {
+  cubecolor: "#ff0000",
+};
+gui
+  .addColor(colorParams, "cubecolor")
+  .name("立方体颜色")
+  .onChange((val) => {
+    cube.material.color.set(val);
+  });
 </script>
 
 <template>
