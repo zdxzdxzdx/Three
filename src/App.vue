@@ -25,6 +25,24 @@ document.body.appendChild(renderer.domElement);
 // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 //父元素
 
+//单独创建一个每个面不同的立方体
+const cubegeometry = new THREE.BoxGeometry(1, 1, 1);
+const cubematerial0 = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const cubematerial1 = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+const cubematerial2 = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+const cubematerial3 = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+const cubematerial4 = new THREE.MeshBasicMaterial({ color: 0xffffff });
+const cubematerial5 = new THREE.MeshBasicMaterial({ color: 0x000000 });
+const cube1 = new THREE.Mesh(cubegeometry, [
+  cubematerial0,
+  cubematerial1,
+  cubematerial2,
+  cubematerial3,
+  cubematerial4,
+  cubematerial5,
+]);
+cube1.position.x = 2;
+scene.add(cube1);
 //创建三角形平面
 const geometry = new THREE.BufferGeometry();
 //创建顶点数据 顶点是有序的，每三个为一个顶点，逆时针为正面
@@ -43,20 +61,27 @@ geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
 //坐标的索引值 三个为一个索引
 const indices = new Uint16Array([0, 1, 2, 2, 3, 0]);
 geometry.setIndex(new THREE.BufferAttribute(indices, 1));
+
+//设置2个顶点组，形成两个材质
+geometry.addGroup(0, 3, 0);
+geometry.addGroup(3, 3, 1);
 const material = new THREE.MeshBasicMaterial({
   color: 0x00ff00,
   //side: THREE.DoubleSide, //设置两面都能看到
   wireframe: true,
 });
-const plane = new THREE.Mesh(geometry, material);
+const material1 = new THREE.MeshBasicMaterial({
+  color: 0x0000ff,
+});
+const plane = new THREE.Mesh(geometry, [material, material1]);
 scene.add(plane);
-console.log(geometry, "geometry");
+
 const parentMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 //设置父元素材质为线框模式
 parentMaterial.wireframe = true;
 const parentCube = new THREE.Mesh(geometry, parentMaterial);
 parentCube.position.set(-2, 0, 0);
-// parentCube.scale.set(2, 2, 2);
+// parentCube.scale.set(2, 2, 2);//放大
 parentCube.rotation.set(45, 0, 0);
 //网格
 const cube = new THREE.Mesh(geometry, material);
