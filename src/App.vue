@@ -20,11 +20,37 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 //创建立方体
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-//材质
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+// const geometry = new THREE.BoxGeometry(1, 1, 1);
+// //材质
+// const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 //父元素
 
+//创建三角形平面
+const geometry = new THREE.BufferGeometry();
+//创建顶点数据 顶点是有序的，每三个为一个顶点，逆时针为正面
+// const vertices = new Float32Array([
+//   -1.0, -1.0, 0.0, 1.0, -1.0, 0.0, 1.0, 1.0, 0.0,
+// ]);
+
+//创建顶点属性
+//geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
+
+//共用顶点,创建索引绘制
+const vertices = new Float32Array([
+  -1.0, -1.0, 0.0, 1.0, -1.0, 0.0, 1.0, 1.0, 0.0, -1.0, 1.0, 0.0,
+]);
+geometry.setAttribute("position", new THREE.BufferAttribute(vertices, 3));
+//坐标的索引值 三个为一个索引
+const indices = new Uint16Array([0, 1, 2, 2, 3, 0]);
+geometry.setIndex(new THREE.BufferAttribute(indices, 1));
+const material = new THREE.MeshBasicMaterial({
+  color: 0x00ff00,
+  //side: THREE.DoubleSide, //设置两面都能看到
+  wireframe: true,
+});
+const plane = new THREE.Mesh(geometry, material);
+scene.add(plane);
+console.log(geometry, "geometry");
 const parentMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 //设置父元素材质为线框模式
 parentMaterial.wireframe = true;
@@ -41,7 +67,7 @@ cube.position.set(2, 0, 0);
 //在x轴旋转45度  如果父也旋转45 在父的基础上 也就旋转90
 cube.rotation.set(45, 0, 0);
 scene.add(parentCube);
-parentCube.add(cube);
+// parentCube.add(cube);
 
 camera.position.z = 5;
 camera.position.y = 2;
